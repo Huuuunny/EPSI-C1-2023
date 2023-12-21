@@ -1,1 +1,1 @@
-API utilisant coinLayer pour traquer le prix de vos cryptomonnaies préferer
+API utilisant coinLayer pour traquer le prix de vos cryptomonnaies préferées
