@@ -34,8 +34,12 @@
 
             <div>
                 <h3>Prix actuel:</h3>
-                <p v-if="cryptoPrice !== null">Prix actuel: {{ cryptoPrice }} USD</p>
-                <p v-if="cryptoCap !== null">La capitalisation totale est de {{ cryptoCap }} USD</p>
+                <p v-if="crypto !== null">Prix actuel: {{ crypto.price }} USD</p>
+                <p v-if="crypto !== null">La capitalisation totale est de {{ crypto.market_cap }} USD</p>
+                <p v-if="crypto !== null">La variation du prix aujourd'hui est de : {{ crypto.percent_change_24h }}USD
+                </p>
+                <p v-if="crypto !== null">Il y a {{ crypto.tsupply }} tokens en circulation</p>
+                <p v-if="crypto !== null">Son classement est : {{ crypto.rank }}</p>
                 <p v-else>Entrez le symbole d'une cryptomonnaie pour voir le prix.</p>
             </div>
         </div>
@@ -47,8 +51,7 @@
             data() {
                 return {
                     selectedCrypto: null,
-                    cryptoPrice: null,
-                    cryptoCap: null
+                    crypto: null
                 }
             },
 
@@ -61,19 +64,23 @@
                             const response = await fetch(apiUrl);
                             const data = await response.json();
 
-
                             if (data.length > 0) {
-                                this.cryptoPrice = data[0].price_usd;
-                                this.cryptoCap = data[0].market_cap_usd;
+                                this.crypto = {
+                                    rank: data[0].rank,
+                                    percent_change_24h: data[0].percent_change_24h,
+                                    tsupply: data[0].tsupply,
+                                    price: data[0].price_usd,
+                                    market_cap: data[0].market_cap_usd
+                                };
                             } else {
                                 console.error("Cryptomonnaie introuvable.");
-                                this.cryptoPrice = null;
+                                this.crypto = null;
                             }
                         } catch (error) {
                             console.error(error);
                         }
                     } else {
-                        this.cryptoPrice = null;
+                        this.crypto = null;
                     }
                 }
             }
