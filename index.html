@@ -5,23 +5,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coinlayer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+    <script src="https://unpkg.com/vue@3"></script>
+
 </head>
 
 <body>
+    <div id="app" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
 
-    <script src="https://unpkg.com/vue@3"></script>
+        <div>
+            <h2>Crypto Price Viewer</h2>
+
+            <label for="cryptoInput">Sélectionner une cryptomonnaie:</label>
+            <select v-model="selectedCrypto" @change="getCryptoData">
+                <option value="90">Bitcoin (BTC)</option>
+                <option value="80">Ethereum (ETH)</option>
+                <option value="2">DogeCoin (DOGE)</option>
+                <option value="48543">Solana (SOL)</option>
+                <option value="58">Ripple (XRP)</option>
+                <option value="257">Cardano (ADA)</option>
+                <option value="45088">Shiba Inu (SHIB)</option>
+                <!-- Ajoutez d'autres options selon vos besoins -->
+            </select>
+
+            <div>
+                <h3>Prix actuel:</h3>
+                <p v-if="cryptoPrice !== null">Prix actuel: {{ cryptoPrice }} USD</p>
+                <p v-if="cryptoCap !== null">La capitalisation totale est de {{ cryptoCap }} USD</p>
+                <p v-else>Entrez le symbole d'une cryptomonnaie pour voir le prix.</p>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        var demo = Vue.createApp({
+        var app = Vue.createApp({
             data() {
                 return {
-
+                    selectedCrypto: null,
+                    cryptoPrice: null,
+                    cryptoCap: null
                 }
             },
 
             methods: {
+                async getCryptoData() {
+                    if (this.selectedCrypto) {
+                        var apiUrl = "https://api.coinlore.net/api/ticker/?id=" + this.selectedCrypto;
 
+                        try {
+                            const response = await fetch(apiUrl);
+                            const data = await response.json();
+
+
+                            if (data.length > 0) {
+                                this.cryptoPrice = data[0].price_usd;
+                                this.cryptoCap = data[0].market_cap_usd;
+                            } else {
+                                console.error("Cryptomonnaie introuvable.");
+                                this.cryptoPrice = null;
+                            }
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    } else {
+                        this.cryptoPrice = null;
+                    }
+                }
             }
-        }).mount('#main');
+        }).mount('#app');
     </script>
 </body>
 
